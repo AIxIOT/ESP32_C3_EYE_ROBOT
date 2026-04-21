@@ -1,11 +1,13 @@
 #include "display.h"
 #include "eye_mode.h"
+#include "dino_mode.h"
 #include "input.h"
 #include "wifi_module.h"
 
 enum AppMode {
   MODE_EYE,
-  MODE_CLOCK
+  MODE_CLOCK,
+  MODE_DINO
 };
 
 static AppMode currentMode = MODE_EYE;
@@ -113,6 +115,7 @@ void setup() {
   display_init();
   wifi_init();
   eye_mode_init();
+  dino_mode_init();
 
   // ตั้ง mood swing timer เริ่มต้น
   nextMoodSwing = millis() + random(60000, 180000); // 1-3 นาทีแรก
@@ -130,14 +133,18 @@ void loop() {
   int hour = wifi_get_hour();
   int minute = wifi_get_minute();
 
-  // ===== ปุ่ม Long Press → สลับโหมด Eye ↔ Clock =====
+  // ===== ปุ่ม Long Press → สลับโหมด Eye → Clock → Dino → Eye =====
   if (input_btn_long_press()) {
     if (currentMode == MODE_EYE) {
       currentMode = MODE_CLOCK;
       Serial.println("Mode: CLOCK");
+    } else if (currentMode == MODE_CLOCK) {
+      currentMode = MODE_DINO;
+      dino_mode_init();
+      Serial.println("Mode: DINO");
     } else {
       currentMode = MODE_EYE;
-      isOverride = false; // กลับจาก Clock → ยกเลิก Override
+      isOverride = false;
       Serial.println("Mode: EYE");
     }
   }
@@ -157,6 +164,16 @@ void loop() {
     oled.drawStr((SCREEN_W - dw) / 2, 60, statusStr);
     
     oled.sendBuffer();
+    delay(16);
+    return;
+  }
+
+  // ===== โหมดไดโนเสาร์ =====
+  if (currentMode == MODE_DINO) {
+    if (input_btn_short_press()) {
+      dino_mode_jump();
+    }
+    dino_mode_update();
     delay(16);
     return;
   }

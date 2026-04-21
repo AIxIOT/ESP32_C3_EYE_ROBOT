@@ -22,7 +22,7 @@ void wifi_init() {
   
   Serial.print("Connecting to WiFi");
   unsigned long wifiStart = millis();
-  const unsigned long WIFI_TIMEOUT = 10000; // 10 วินาที
+  const unsigned long WIFI_TIMEOUT = 15000; // 15 วินาที
   
   while (WiFi.status() != WL_CONNECTED) {
     if (millis() - wifiStart >= WIFI_TIMEOUT) {
