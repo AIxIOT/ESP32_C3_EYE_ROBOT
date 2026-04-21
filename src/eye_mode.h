@@ -6,6 +6,9 @@ enum EyeEmotion {
   EMOTION_ANGRY,       // โกรธ - ตาเฉียง
   EMOTION_CRAZY,       // บ้า - สั่น ขนาดเปลี่ยน
   EMOTION_SLEEPY,      // งีบ - ค่อยๆ หลับ
+  EMOTION_HUNGRY,      // หิว - ตาปรือ + น้ำลายไหล
+  EMOTION_SAD,         // เศร้า - ตาลู่ลง + น้ำตา
+  EMOTION_LAUGH,       // หัวเราะ - ตาหยี ^▽^ + สั่นเด้ง
   EMOTION_COUNT
 };
 

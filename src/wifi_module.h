@@ -10,3 +10,5 @@ void wifi_update();
 bool wifi_is_connected();
 const char* wifi_get_time_string();
 const char* wifi_get_status_string();
+int wifi_get_hour();    // -1 ถ้ายังไม่ได้ sync เวลา
+int wifi_get_minute();  // -1 ถ้ายังไม่ได้ sync เวลา

@@ -12,6 +12,9 @@ static char timeString[16] = "--:--";
 static char statusString[16] = "DISCONNECTED";
 static unsigned long lastTimeCheck = 0;
 static unsigned long lastWifiCheck = 0;
+static bool timeSynced = false;
+static int cachedHour = -1;
+static int cachedMinute = -1;
 
 void wifi_init() {
   WiFi.mode(WIFI_STA);
@@ -22,7 +25,6 @@ void wifi_init() {
   const unsigned long WIFI_TIMEOUT = 10000; // 10 วินาที
   
   while (WiFi.status() != WL_CONNECTED) {
-    // เช็ค Timeout
     if (millis() - wifiStart >= WIFI_TIMEOUT) {
       Serial.println("\nWiFi Timeout! Skipping...");
       display_show_wifi_status(WIFI_SSID, "TIMEOUT - SKIP");
@@ -33,7 +35,7 @@ void wifi_init() {
     
     display_show_wifi_status(WIFI_SSID, "Connecting...");
     Serial.print(".");
-    delay(100); // delay สั้นลงให้ spinner หมุนลื่นๆ
+    delay(100);
   }
   
   Serial.println("\nWiFi Connected!");
@@ -47,7 +49,6 @@ void wifi_init() {
   display_show_wifi_status(WIFI_SSID, "SYNC TIME...");
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   
-  // Wait for time to be set with a timeout
   struct tm timeinfo;
   int retry = 0;
   while (!getLocalTime(&timeinfo) && retry < 10) {
@@ -60,6 +61,9 @@ void wifi_init() {
   if (retry < 10) {
     Serial.println("\nTime Synced!");
     strcpy(statusString, "WIFI OK");
+    timeSynced = true;
+    cachedHour = timeinfo.tm_hour;
+    cachedMinute = timeinfo.tm_min;
   } else {
     Serial.println("\nTime Sync Failed!");
     strcpy(statusString, "TIME FAILED");
@@ -74,10 +78,11 @@ void wifi_update() {
     lastWifiCheck = currentMillis;
     if (WiFi.status() != WL_CONNECTED) {
       strcpy(statusString, "NO WIFI");
-      // Optional: attempt reconnect here if needed in a non-blocking way
-      // WiFi.reconnect(); 
     } else {
       strcpy(statusString, "WIFI OK");
+      if (!timeSynced) {
+        configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+      }
     }
   }
 
@@ -87,8 +92,15 @@ void wifi_update() {
     struct tm timeinfo;
     if (getLocalTime(&timeinfo)) {
       sprintf(timeString, "%02d:%02d", timeinfo.tm_hour, timeinfo.tm_min);
+      cachedHour = timeinfo.tm_hour;
+      cachedMinute = timeinfo.tm_min;
+      timeSynced = true;
     } else {
-      strcpy(timeString, "--:--");
+      if (!timeSynced) {
+        strcpy(timeString, "--:--");
+        cachedHour = -1;
+        cachedMinute = -1;
+      }
     }
   }
 }
@@ -103,4 +115,12 @@ const char* wifi_get_time_string() {
 
 const char* wifi_get_status_string() {
   return statusString;
+}
+
+int wifi_get_hour() {
+  return cachedHour;
+}
+
+int wifi_get_minute() {
+  return cachedMinute;
 }
