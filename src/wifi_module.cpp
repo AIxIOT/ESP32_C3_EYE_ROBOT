@@ -18,17 +18,22 @@ void wifi_init() {
   WiFi.begin(WIFI_SSID, WIFI_PASS);
   
   Serial.print("Connecting to WiFi");
-  int dotCount = 0;
-  char statusMsg[32];
+  unsigned long wifiStart = millis();
+  const unsigned long WIFI_TIMEOUT = 10000; // 10 วินาที
   
   while (WiFi.status() != WL_CONNECTED) {
-    dotCount = (dotCount + 1) % 4;
-    strcpy(statusMsg, "Connecting");
-    for(int i=0; i<dotCount; i++) strcat(statusMsg, ".");
+    // เช็ค Timeout
+    if (millis() - wifiStart >= WIFI_TIMEOUT) {
+      Serial.println("\nWiFi Timeout! Skipping...");
+      display_show_wifi_status(WIFI_SSID, "TIMEOUT - SKIP");
+      delay(1000);
+      strcpy(statusString, "NO WIFI");
+      return;
+    }
     
-    display_show_wifi_status(WIFI_SSID, statusMsg);
+    display_show_wifi_status(WIFI_SSID, "Connecting...");
     Serial.print(".");
-    delay(500);
+    delay(100); // delay สั้นลงให้ spinner หมุนลื่นๆ
   }
   
   Serial.println("\nWiFi Connected!");
