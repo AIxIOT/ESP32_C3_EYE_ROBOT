@@ -1,6 +1,7 @@
 #include "display.h"
 #include "eye_mode.h"
 #include "clock_mode.h"
+#include "stopwatch_mode.h"
 #include "dino_mode.h"
 #include "input.h"
 #include "wifi_module.h"
@@ -8,6 +9,7 @@
 enum AppMode {
   MODE_EYE,
   MODE_CLOCK,
+  MODE_STOPWATCH,
   MODE_DINO
 };
 
@@ -117,6 +119,7 @@ void setup() {
   wifi_init();
   eye_mode_init();
   clock_mode_init();
+  stopwatch_mode_init();
   dino_mode_init();
 
   // ตั้ง mood swing timer เริ่มต้น
@@ -135,7 +138,7 @@ void loop() {
   int hour = wifi_get_hour();
   int minute = wifi_get_minute();
 
-  // ===== ปุ่ม Long Press → สลับโหมด Eye → Clock → Dino → Eye =====
+  // ===== ปุ่ม Long Press → สลับโหมด Eye → Clock → Stopwatch → Dino → Eye =====
   if (input_btn_long_press()) {
     if (wifi_is_portal_active()) {
       wifi_stop_ap_portal(); // ปิด portal ถ้าเปิดอยู่
@@ -145,6 +148,10 @@ void loop() {
       currentMode = MODE_CLOCK;
       Serial.println("Mode: CLOCK");
     } else if (currentMode == MODE_CLOCK) {
+      currentMode = MODE_STOPWATCH;
+      stopwatch_mode_init();
+      Serial.println("Mode: STOPWATCH");
+    } else if (currentMode == MODE_STOPWATCH) {
       currentMode = MODE_DINO;
       dino_mode_init();
       Serial.println("Mode: DINO");
@@ -161,6 +168,16 @@ void loop() {
       clock_mode_toggle_info();
     }
     clock_mode_update();
+    delay(16);
+    return;
+  }
+
+  // ===== โหมดจับเวลา =====
+  if (currentMode == MODE_STOPWATCH) {
+    if (input_btn_short_press()) {
+      stopwatch_mode_click();
+    }
+    stopwatch_mode_update();
     delay(16);
     return;
   }

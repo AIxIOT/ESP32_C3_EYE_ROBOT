@@ -38,7 +38,7 @@ The project uses the **ESP32-C3 Super Mini** board connected to an **SH1106 1.3"
 
 ## 🕹️ Operation Modes
 
-The robot operates in three main modes, cycled via a **Long Press (1 second)**.
+The robot operates in four main modes, cycled via a **Long Press (1 second)**.
 
 ### 1. EYE Mode (Default)
 The "Living Robot" mode. It features expressive eyes that react dynamically.
@@ -55,7 +55,12 @@ A functional desk clock with WiFi synchronization.
 - **Visuals**: Displays large digital time and WiFi signal status.
 - **Extra Info**: A **Short Press** toggles additional information, such as the local IP address.
 
-### 3. DINO Mode
+### 3. STOPWATCH Mode
+A precise stopwatch with large digits for easy reading.
+- **Visuals**: Displays time in a large `MM:SS` format filling the screen.
+- **Control**: **Short Press** to Start / Stop / Reset (Cycle: Idle ➡️ Running ➡️ Stopped ➡️ Idle).
+
+### 4. DINO Mode
 A "Chrome Dino" inspired mini-game.
 - **Gameplay**: The dinosaur runs continuously; your goal is to jump over obstacles.
 - **Control**: **Short Press** to make the Dino jump.
@@ -67,8 +72,8 @@ A "Chrome Dino" inspired mini-game.
 
 | Action | Result |
 |--------|--------|
-| **Short Press** | **EYE**: Manual emotion change<br>**CLOCK**: Toggle IP info<br>**DINO**: Jump |
-| **Long Press (1s)** | Cycle Mode: **EYE** ➡️ **CLOCK** ➡️ **DINO** ➡️ (Loop) |
+| **Short Press** | **EYE**: Manual emotion change<br>**CLOCK**: Toggle IP info<br>**STOPWATCH**: Start / Stop / Reset<br>**DINO**: Jump |
+| **Long Press (1s)** | Cycle Mode: **EYE** ➡️ **CLOCK** ➡️ **STOPWATCH** ➡️ **DINO** ➡️ (Loop) |
 
 ---
 

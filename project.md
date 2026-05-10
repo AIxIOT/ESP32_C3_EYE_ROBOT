@@ -2,8 +2,8 @@
 
 ## Overview
 โปรเจคแสดง **Eye Animation** บนจอ OLED 1.3" ผ่าน ESP32-C3 Mini  
-มี 2 โหมดหลัก: **โหมดดวงตา (Eye)** และ **โหมดนาฬิกา (Clock)**  
-ควบคุมด้วยปุ่มเดียว (GPIO 10) — กดสั้นเปลี่ยนอารมณ์ กดแช่ 1 วิเปลี่ยนโหมด
+มี 4 โหมดหลัก: **โหมดดวงตา (Eye)**, **โหมดนาฬิกา (Clock)**, **โหมดจับเวลา (Stopwatch)**, และ **โหมดไดโนเสาร์ (Dino Run)**  
+ควบคุมด้วยปุ่มเดียว (GPIO 10) — กดสั้นเปลี่ยนอารมณ์/กดทำแอ็คชั่น กดแช่ 1 วิเปลี่ยนโหมด
 
 ---
 
@@ -34,11 +34,13 @@
 
 ## Features
 
-### App Modes (2 โหมด)
-| Mode   | คำอธิบาย                              | สลับโดย |
-|--------|---------------------------------------|---------|
-| EYE    | แสดงดวงตา animation 5 อารมณ์          | กดแช่ 1 วิ |
-| CLOCK  | แสดงเวลาตัวใหญ่ + สถานะ WiFi          | กดแช่ 1 วิ |
+### App Modes (4 โหมด)
+| Mode       | คำอธิบาย                              | สลับโดย |
+|------------|---------------------------------------|---------|
+| EYE        | แสดงดวงตา animation 5 อารมณ์          | กดแช่ 1 วิ |
+| CLOCK      | แสดงเวลาตัวใหญ่ + สถานะ WiFi          | กดแช่ 1 วิ |
+| STOPWATCH  | จับเวลาตัวใหญ่ (นาที:วินาที) กดเริ่ม/หยุด | กดแช่ 1 วิ |
+| DINO       | มินิเกมกระโดดข้ามกระบองเพชร           | กดแช่ 1 วิ |
 
 ### Eye Emotions (5 แบบ)
 | Emotion  | ลักษณะ                            |
@@ -71,6 +73,12 @@ EYE_ROBOT_01/
 │   ├── display.cpp      ← display_init() + WiFi splash screen (spinner)
 │   ├── eye_mode.h       ← EyeEmotion enum + API
 │   ├── eye_mode.cpp     ← logic วาดตาทั้ง 5 emotion (ตาโค้งมน, clamp ขอบจอ)
+│   ├── clock_mode.h     ← API โหมดนาฬิกา
+│   ├── clock_mode.cpp   ← โหมดนาฬิกา และการแสดงสถานะ WiFi
+│   ├── stopwatch_mode.h ← API โหมดจับเวลา
+│   ├── stopwatch_mode.cpp ← โหมดจับเวลา (ตัวเลขขนาดใหญ่)
+│   ├── dino_mode.h      ← API โหมดเกมไดโนเสาร์
+│   ├── dino_mode.cpp    ← logic เกมไดโนเสาร์ (กระโดดหลบสิ่งกีดขวาง)
 │   ├── input.h          ← Input API (short/long press)
 │   ├── input.cpp        ← Single button logic (GPIO 10)
 │   ├── wifi_module.h    ← WiFi config + NTP API
